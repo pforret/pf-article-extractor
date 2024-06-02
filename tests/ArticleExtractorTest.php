@@ -45,7 +45,7 @@ final class ArticleExtractorTest extends TestCase
         $this->assertEquals('Humanitarian aid in the Middle East | London City Hall', $article->title);
         $this->assertEquals('Message from the Mayor In recent days, t', substr($article->content, 0, 40));
         $this->assertStringContainsString('many have asked him how they can help', $article->content);
-       $this->assertEquals(528, strlen($article->content));
+        $this->assertEquals(528, strlen($article->content));
 
     }
 

@@ -11,6 +11,7 @@ final class TextBlock
     private bool $isContent = false;
 
     private string $text = '';
+
     private array $texts = [];
 
     private array $images = [];
@@ -28,7 +29,6 @@ final class TextBlock
     private int $linkWordCount = 0;
 
     private int $wordCount = 0;
-
 
     public function __construct(int $level = 0, array $labels = [])
     {
@@ -53,10 +53,10 @@ final class TextBlock
             if (strpos($url, 'http') !== 0) {
                 continue;
             }
-            if($this->isIrrelevantPicture($url)){
+            if ($this->isIrrelevantPicture($url)) {
                 continue;
             }
-            $url = str_replace("&amp;","&",$url);
+            $url = str_replace('&amp;', '&', $url);
             $this->images[] = $url;
         }
 
@@ -73,7 +73,7 @@ final class TextBlock
             if (! $url) {
                 continue;
             }
-            if (!str_starts_with($url, 'http')) {
+            if (! str_starts_with($url, 'http')) {
                 continue;
             }
             $this->links[] = $tag->getAttribute('href');
@@ -84,8 +84,8 @@ final class TextBlock
 
     public function addText(string $text, string $link = ''): self
     {
-        if(str_contains($text, 'xxxxxxxxxxxxxxtribune')){
-           print($text);
+        if (str_contains($text, 'xxxxxxxxxxxxxxtribune')) {
+            echo $text;
         }
         if (trim($text)) {
             $this->text .= "$text ";
@@ -311,9 +311,9 @@ final class TextBlock
 
         $isIrrelevant = $isIrrelevant || in_array(strtolower(basename($url)), $detectBasenames);
         $detectDomains = [
-            "cdn.jsdelivr.net"
+            'cdn.jsdelivr.net',
         ];
-        $isIrrelevant = $isIrrelevant || in_array(parse_url($url,PHP_URL_HOST), $detectDomains);
+        $isIrrelevant = $isIrrelevant || in_array(parse_url($url, PHP_URL_HOST), $detectDomains);
 
         return $isIrrelevant;
     }

@@ -87,8 +87,8 @@ class HtmlContent
                 $textLine = $this->justTheText($element->data);
                 $textTitle = $this->justTheText($this->title);
                 if ($textLine != $textTitle &&
-                    !str_starts_with($textLine,$textTitle) &&
-                    !str_starts_with($textTitle,$textLine)
+                    ! str_starts_with($textLine, $textTitle) &&
+                    ! str_starts_with($textTitle, $textLine)
                 ) {
                     $this->textBlock->addText($element->data, $isAnchor);
                 }
