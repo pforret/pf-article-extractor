@@ -7,10 +7,11 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/pforret/pf-article-extractor)
 ![GitHub License](https://img.shields.io/github/license/pforret/pf-article-extractor)
 
-Boilerplate Removal and Fulltext Extraction from HTML pages.
-Rewrite of `dotpack/php-boiler-pipe` for ^PHP8.2
-
 ![](assets/unsplash.squeeze.jpg)
+
+Boilerplate Removal and Fulltext Extraction from HTML pages.
+
+Rewrite of `dotpack/php-boiler-pipe` for PHP8.2 and up, with tests.
 
 ## Installation
 
@@ -45,3 +46,19 @@ $articleData = ArticleExtractor::getArticle($html);
 
  */
 ```
+
+## Under the hood
+
+* package accepts a full HTML page as input
+* it will walk the DOM tree and try to find the main article content
+* it will remove boilerplate content (like headers, footers, sidebars, ...)
+* it will try to extract the main article content
+* it will try to extract the title, date, images and links from the article
+
+Rights now it's tested with example pages for
+* Blogger
+* Drupal
+* Jekyll
+* Mkdocs
+* Wix
+* WordPress
