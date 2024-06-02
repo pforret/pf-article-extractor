@@ -76,12 +76,23 @@ class HtmlContent
                     $this->textBlock = new TextBlock($level, $labels);
                 }
             } elseif ($element->nodeType == XML_TEXT_NODE) {
-                $this->textBlock->addText($element->data, $isAnchor);
+                $element->data = trim($element->data);
+                if(str_ends_with($element->data,".")
+                    || str_ends_with($element->data,",")
+                    || str_ends_with($element->data,";")
+                    || str_ends_with($element->data,"?")
+                    || str_ends_with($element->data,"!")){
+                    $element->data = $element->data . " ";
+                }
+                if($this->justTheText($element->data) != $this->justTheText($this->title)){
+                    $this->textBlock->addText($element->data, $isAnchor);
+                }
             }
         } elseif ($this->isTitle) {
             if ($element->nodeType == XML_TEXT_NODE) {
                 $element->data = trim($element->data);
                 if ($element->data && ($this->justTheText($element->data) != $this->justTheText($this->title))) {
+                    // avoid double title (when it's both a <title> and a <h1>,<h2> for instance)
                     $this->title .= $element->data;
                 }
             }
