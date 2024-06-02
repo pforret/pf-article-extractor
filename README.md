@@ -30,7 +30,7 @@ $articleData = ArticleExtractor::getArticle($html);
     [date] =>
     [images] => Array
         (
-            [0] => https://static.wixstatic.com/media/b19cd0_dde0d59546f84127865267f43994f39b~mv2.jpg/v1/fill/w_147,h_84,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_auto/b19cd0_dde0d59546f84127865267f43994f39b~mv2.jpg
+            [0] => https://static.wixstatic.com/media/.../v1/fill/w_147,h_84,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_auto/b19cd0_dde0d59546f84127865267f43994f39b~mv2.jpg
         )
 
     [links] => Array
