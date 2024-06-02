@@ -2,6 +2,8 @@
 
 namespace Pforret\PhpArticleExtractor\Formats;
 
+use DOMDocument;
+use DOMNode;
 use Pforret\PhpArticleExtractor\Naming\TextLabels;
 
 class HtmlContent
@@ -14,17 +16,7 @@ class HtmlContent
 
     private bool $isTitle = false;
 
-    private bool $isAnchor = false;
-
     private string $title = '';
-
-    private int $index = 0;
-
-    private int $level = 0;
-
-    private $block = null;
-
-    private $tag = '';
 
     private array $labels = [
         'li' => [TextLabels::LI],
@@ -40,11 +32,11 @@ class HtmlContent
 
         $this->textDocument = new TextDocument();
 
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         libxml_use_internal_errors(true);
         $dom->loadHTML($html);
         libxml_clear_errors();
-        $this->node($dom->documentElement);
+        $this->walkNodeTree($dom->documentElement);
 
         if ($this->textBlock) {
             $this->textDocument->addTextBlock($this->textBlock);
@@ -57,18 +49,13 @@ class HtmlContent
         return $this->textDocument;
     }
 
-    public function getImages(): array
-    {
-        $images = [];
-        return $images;
-    }
-
-    private function node(\DOMNode $element, int $level = 0, bool $isAnchor = false): void
+    private function walkNodeTree(DOMNode $element, int $level = 0, bool $isAnchor = false): void
     {
         $tag = null;
         if ($element->nodeType == XML_ELEMENT_NODE) {
             $tag = strtolower($element->tagName);
             if ($tag == 'body') {
+                // from now on, we're in the <body> tag, where the content lives
                 $this->isBody = true;
             }
             $this->isTitle = ($tag == 'title');
@@ -82,6 +69,8 @@ class HtmlContent
                 } else {
                     if ($this->textBlock) {
                         $this->textDocument->addTextBlock($this->textBlock);
+                        $this->textBlock->parseImages($element->ownerDocument->saveHTML($element));
+                        $this->textBlock->parseLinks($element->ownerDocument->saveHTML($element));
                     }
                     $labels = $this->labels[$tag] ?? [];
                     $this->textBlock = new TextBlock($level, $labels);
@@ -91,14 +80,22 @@ class HtmlContent
             }
         } elseif ($this->isTitle) {
             if ($element->nodeType == XML_TEXT_NODE) {
-                $this->title .= $element->data;
+                $element->data = trim($element->data);
+                if ($element->data && ($this->justTheText($element->data) != $this->justTheText($this->title))) {
+                    $this->title .= $element->data;
+                }
             }
         }
 
-        if ($element->childNodes) {
+        if ($element->hasChildNodes()) {
             foreach ($element->childNodes as $node) {
-                $this->node($node, $level + 1, $isAnchor);
+                $this->walkNodeTree($node, $level + 1, $isAnchor);
             }
         }
+    }
+
+    private function justTheText(string $text): string
+    {
+        return preg_replace('/[^\w]+/', '', $text);
     }
 }

@@ -8,5 +8,9 @@ class ArticleContents
 
     public string $content = '';
 
+    public string $date = '';
+
     public array $images = [];
+
+    public array $links = [];
 }

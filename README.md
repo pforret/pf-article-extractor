@@ -9,3 +9,20 @@ Boilerplate Removal and Fulltext Extraction from HTML pages.
 Rewrite of `dotpack/php-boiler-pipe` for ^PHP8.2
 
 ![](assets/unsplash.squeeze.jpg)
+
+## Installation
+
+```bash
+composer require pforret/php-article-extractor
+```
+
+## Usage
+
+```php
+use Pforret\PhpArticleExtractor\ArticleExtractor;
+
+$articleData = ArticleExtractor::extract($html);
+/*
+ * $articleData = [
+ */
+```

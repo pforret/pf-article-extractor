@@ -86,4 +86,36 @@ final class TextDocument
 
         return $result;
     }
+
+    public function getImages(bool $includeContent = true, bool $includeNonContent = false): array
+    {
+        $imageUrls = [];
+        foreach ($this->textBlocks as $block) {
+            if ($block->isContent() && ! $includeContent) {
+                continue;
+            }
+            if (! $block->isContent() && ! $includeNonContent) {
+                continue;
+            }
+            $imageUrls = array_merge($imageUrls, $block->getImages());
+        }
+
+        return $imageUrls;
+    }
+
+    public function getLinks(bool $includeContent = true, bool $includeNonContent = false): array
+    {
+        $linkUrls = [];
+        foreach ($this->textBlocks as $block) {
+            if ($block->isContent() && ! $includeContent) {
+                continue;
+            }
+            if (! $block->isContent() && ! $includeNonContent) {
+                continue;
+            }
+            $linkUrls = array_merge($linkUrls, $block->getLinks());
+        }
+
+        return $linkUrls;
+    }
 }

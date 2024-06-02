@@ -20,7 +20,7 @@ use Pforret\PhpArticleExtractor\Naming\TextLabels;
 
 final class ArticleExtractor
 {
-    private function process(TextDocument $doc): bool
+    public static function process(TextDocument $doc): bool
     {
         return (new TerminatingBlocksFinder())->process($doc)
         | (new DocumentTitleMatchClassifier)->process($doc)
@@ -36,27 +36,28 @@ final class ArticleExtractor
         | (new ListAtEndFilter)->process($doc);
     }
 
-    public function getContent(string $html): string
+    public static function getContent(string $html): string
     {
         $content = new HtmlContent($html);
         $document = $content->getTextDocument();
 
-        $this->process($document);
+        self::process($document);
 
         return $document->getContent();
     }
 
-    public function getArticle(string $html): ArticleContents
+    public static function getArticle(string $html): ArticleContents
     {
         $content = new HtmlContent($html);
         $document = $content->getTextDocument();
 
-        $this->process($document);
+        self::process($document);
 
         $article = new ArticleContents();
         $article->title = $document->getTitle();
         $article->content = $document->getContent();
-        $article->images = $content->getImages();
+        $article->images = $document->getImages();
+        $article->links = $document->getLinks();
 
         return $article;
     }
