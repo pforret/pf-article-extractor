@@ -84,6 +84,9 @@ final class TextBlock
 
     public function addText(string $text, string $link = ''): self
     {
+        if(str_contains($text, 'xxxxxxxxxxxxxxtribune')){
+           print($text);
+        }
         if (trim($text)) {
             $this->text .= "$text ";
             $this->texts[] = $link ? '<a href="'.$link.'">'.$text.'</a>' : $text;
