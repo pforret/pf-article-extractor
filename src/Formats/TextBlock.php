@@ -6,29 +6,29 @@ use DOMDocument;
 
 final class TextBlock
 {
+    private int $level = 0;
+
+    private bool $isContent = false;
+
+    private string $text = '';
+    private array $texts = [];
+
     private array $images = [];
 
     private array $links = [];
 
     private array $labels = [];
 
-    private array $texts = [];
-
-    private bool $isContent = false;
+    private int $startOffset = 0;
 
     private int $endOffset = 0;
-
-    private int $level = 0;
 
     private int $linkCount = 0;
 
     private int $linkWordCount = 0;
 
-    private int $startOffset = 0;
-
     private int $wordCount = 0;
 
-    private string $text = '';
 
     public function __construct(int $level = 0, array $labels = [])
     {
@@ -46,7 +46,18 @@ final class TextBlock
         @$doc->loadHTML($html);
         $tags = $doc->getElementsByTagName('img');
         foreach ($tags as $tag) {
-            $this->images[] = $tag->getAttribute('src');
+            $url = $tag->getAttribute('src');
+            if (! $url) {
+                continue;
+            }
+            if (strpos($url, 'http') !== 0) {
+                continue;
+            }
+            if($this->isIrrelevantPicture($url)){
+                continue;
+            }
+            $url = str_replace("&amp;","&",$url);
+            $this->images[] = $url;
         }
 
         return $this;
@@ -58,16 +69,23 @@ final class TextBlock
         @$doc->loadHTML($html);
         $tags = $doc->getElementsByTagName('a');
         foreach ($tags as $tag) {
+            $url = $tag->getAttribute('href');
+            if (! $url) {
+                continue;
+            }
+            if (!str_starts_with($url, 'http')) {
+                continue;
+            }
             $this->links[] = $tag->getAttribute('href');
         }
 
         return $this;
     }
 
-    public function addText(string $text, bool $link = false): self
+    public function addText(string $text, string $link = ''): self
     {
         if (trim($text)) {
-            $this->text .= $text;
+            $this->text .= "$text ";
             $this->texts[] = $link ? '<a href="'.$link.'">'.$text.'</a>' : $text;
 
             $wordCount = $this->calcWordCount($text);
@@ -218,12 +236,12 @@ final class TextBlock
 
     public function getImages(): array
     {
-        return $this->images;
+        return array_unique($this->images);
     }
 
     public function getLinks(): array
     {
-        return $this->links;
+        return array_unique($this->links);
     }
 
     public function __toString(): string
@@ -261,5 +279,39 @@ final class TextBlock
     public function getLinkDensity(): float
     {
         return $this->linkWordCount ? $this->linkWordCount / $this->wordCount : 0;
+    }
+
+    private function isIrrelevantPicture(string $url): bool
+    {
+        $isIrrelevant = false;
+        $detectBasenames = [
+            'blank.gif',
+            'pixel.gif',
+            'pixel.jpeg',
+            'pixel.jpg',
+            'pixel.png',
+            'pixel.svg',
+            'pixel.webp',
+            'spacer.gif',
+            'spacer.jpeg',
+            'spacer.jpg',
+            'spacer.png',
+            'spacer.svg',
+            'spacer.webp',
+            'transparent.gif',
+            'transparent.jpeg',
+            'transparent.jpg',
+            'transparent.png',
+            'transparent.svg',
+            'transparent.webp',
+        ];
+
+        $isIrrelevant = $isIrrelevant || in_array(strtolower(basename($url)), $detectBasenames);
+        $detectDomains = [
+            "cdn.jsdelivr.net"
+        ];
+        $isIrrelevant = $isIrrelevant || in_array(parse_url($url,PHP_URL_HOST), $detectDomains);
+
+        return $isIrrelevant;
     }
 }

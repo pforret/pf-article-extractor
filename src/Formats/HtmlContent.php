@@ -77,14 +77,19 @@ class HtmlContent
                 }
             } elseif ($element->nodeType == XML_TEXT_NODE) {
                 $element->data = trim($element->data);
-                if(str_ends_with($element->data,".")
-                    || str_ends_with($element->data,",")
-                    || str_ends_with($element->data,";")
-                    || str_ends_with($element->data,"?")
-                    || str_ends_with($element->data,"!")){
-                    $element->data = $element->data . " ";
+                if (str_ends_with($element->data, '.')
+                    || str_ends_with($element->data, ',')
+                    || str_ends_with($element->data, ';')
+                    || str_ends_with($element->data, '?')
+                    || str_ends_with($element->data, '!')) {
+                    $element->data = $element->data.' ';
                 }
-                if($this->justTheText($element->data) != $this->justTheText($this->title)){
+                $textLine = $this->justTheText($element->data);
+                $textTitle = $this->justTheText($this->title);
+                if ($textLine != $textTitle &&
+                    !str_starts_with($textLine,$textTitle) &&
+                    !str_starts_with($textTitle,$textLine)
+                ) {
                     $this->textBlock->addText($element->data, $isAnchor);
                 }
             }
