@@ -1,10 +1,10 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor\Filters\English;
+namespace Pforret\PfArticleExtractor\Filters\English;
 
-use Pforret\PhpArticleExtractor\Filters\IFilter;
-use Pforret\PhpArticleExtractor\Formats\TextDocument;
-use Pforret\PhpArticleExtractor\Naming\TextLabels;
+use Pforret\PfArticleExtractor\Filters\IFilter;
+use Pforret\PfArticleExtractor\Formats\TextDocument;
+use Pforret\PfArticleExtractor\Naming\TextLabels;
 
 final class TerminatingBlocksFinder implements IFilter
 {

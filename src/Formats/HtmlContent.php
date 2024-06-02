@@ -1,10 +1,10 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor\Formats;
+namespace Pforret\PfArticleExtractor\Formats;
 
 use DOMDocument;
 use DOMNode;
-use Pforret\PhpArticleExtractor\Naming\TextLabels;
+use Pforret\PfArticleExtractor\Naming\TextLabels;
 
 class HtmlContent
 {

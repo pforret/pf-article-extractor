@@ -1,9 +1,9 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor\Filters\Simple;
+namespace Pforret\PfArticleExtractor\Filters\Simple;
 
-use Pforret\PhpArticleExtractor\Filters\IFilter;
-use Pforret\PhpArticleExtractor\Formats\TextDocument;
+use Pforret\PfArticleExtractor\Filters\IFilter;
+use Pforret\PfArticleExtractor\Formats\TextDocument;
 
 final class BoilerplateBlockFilter implements IFilter
 {

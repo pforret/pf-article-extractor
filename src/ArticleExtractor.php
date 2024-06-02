@@ -1,22 +1,22 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor;
+namespace Pforret\PfArticleExtractor;
 
-use Pforret\PhpArticleExtractor\Filters\English\IgnoreBlocksAfterContentFilter;
-use Pforret\PhpArticleExtractor\Filters\English\NumWordsRulesClassifier;
-use Pforret\PhpArticleExtractor\Filters\English\TerminatingBlocksFinder;
-use Pforret\PhpArticleExtractor\Filters\Heuristics\BlockProximityFusion;
-use Pforret\PhpArticleExtractor\Filters\Heuristics\DocumentTitleMatchClassifier;
-use Pforret\PhpArticleExtractor\Filters\Heuristics\ExpandTitleToContentFilter;
-use Pforret\PhpArticleExtractor\Filters\Heuristics\KeepLargestBlockFilter;
-use Pforret\PhpArticleExtractor\Filters\Heuristics\LargeBlockSameTagLevelToContentFilter;
-use Pforret\PhpArticleExtractor\Filters\Heuristics\ListAtEndFilter;
-use Pforret\PhpArticleExtractor\Filters\Heuristics\TrailingHeadlineToBoilerplateFilter;
-use Pforret\PhpArticleExtractor\Filters\Simple\BoilerplateBlockFilter;
-use Pforret\PhpArticleExtractor\Formats\ArticleContents;
-use Pforret\PhpArticleExtractor\Formats\HtmlContent;
-use Pforret\PhpArticleExtractor\Formats\TextDocument;
-use Pforret\PhpArticleExtractor\Naming\TextLabels;
+use Pforret\PfArticleExtractor\Filters\English\IgnoreBlocksAfterContentFilter;
+use Pforret\PfArticleExtractor\Filters\English\NumWordsRulesClassifier;
+use Pforret\PfArticleExtractor\Filters\English\TerminatingBlocksFinder;
+use Pforret\PfArticleExtractor\Filters\Heuristics\BlockProximityFusion;
+use Pforret\PfArticleExtractor\Filters\Heuristics\DocumentTitleMatchClassifier;
+use Pforret\PfArticleExtractor\Filters\Heuristics\ExpandTitleToContentFilter;
+use Pforret\PfArticleExtractor\Filters\Heuristics\KeepLargestBlockFilter;
+use Pforret\PfArticleExtractor\Filters\Heuristics\LargeBlockSameTagLevelToContentFilter;
+use Pforret\PfArticleExtractor\Filters\Heuristics\ListAtEndFilter;
+use Pforret\PfArticleExtractor\Filters\Heuristics\TrailingHeadlineToBoilerplateFilter;
+use Pforret\PfArticleExtractor\Filters\Simple\BoilerplateBlockFilter;
+use Pforret\PfArticleExtractor\Formats\ArticleContents;
+use Pforret\PfArticleExtractor\Formats\HtmlContent;
+use Pforret\PfArticleExtractor\Formats\TextDocument;
+use Pforret\PfArticleExtractor\Naming\TextLabels;
 
 final class ArticleExtractor
 {

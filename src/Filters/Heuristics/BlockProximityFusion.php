@@ -1,9 +1,9 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor\Filters\Heuristics;
+namespace Pforret\PfArticleExtractor\Filters\Heuristics;
 
-use Pforret\PhpArticleExtractor\Filters\IFilter;
-use Pforret\PhpArticleExtractor\Formats\TextDocument;
+use Pforret\PfArticleExtractor\Filters\IFilter;
+use Pforret\PfArticleExtractor\Formats\TextDocument;
 
 final class BlockProximityFusion implements IFilter
 {

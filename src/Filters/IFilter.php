@@ -1,8 +1,8 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor\Filters;
+namespace Pforret\PfArticleExtractor\Filters;
 
-use Pforret\PhpArticleExtractor\Formats\TextDocument;
+use Pforret\PfArticleExtractor\Formats\TextDocument;
 
 interface IFilter
 {

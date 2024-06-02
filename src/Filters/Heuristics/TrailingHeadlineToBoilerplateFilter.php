@@ -1,11 +1,11 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor\Filters\Heuristics;
+namespace Pforret\PfArticleExtractor\Filters\Heuristics;
 
-use Pforret\PhpArticleExtractor\Filters\IFilter;
-use Pforret\PhpArticleExtractor\Formats\TextBlock;
-use Pforret\PhpArticleExtractor\Formats\TextDocument;
-use Pforret\PhpArticleExtractor\Naming\TextLabels;
+use Pforret\PfArticleExtractor\Filters\IFilter;
+use Pforret\PfArticleExtractor\Formats\TextBlock;
+use Pforret\PfArticleExtractor\Formats\TextDocument;
+use Pforret\PfArticleExtractor\Naming\TextLabels;
 
 final class TrailingHeadlineToBoilerplateFilter implements IFilter
 {

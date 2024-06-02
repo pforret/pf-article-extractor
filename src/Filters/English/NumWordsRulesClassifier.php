@@ -1,10 +1,10 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor\Filters\English;
+namespace Pforret\PfArticleExtractor\Filters\English;
 
-use Pforret\PhpArticleExtractor\Filters\IFilter;
-use Pforret\PhpArticleExtractor\Formats\TextBlock;
-use Pforret\PhpArticleExtractor\Formats\TextDocument;
+use Pforret\PfArticleExtractor\Filters\IFilter;
+use Pforret\PfArticleExtractor\Formats\TextBlock;
+use Pforret\PfArticleExtractor\Formats\TextDocument;
 
 final class NumWordsRulesClassifier implements IFilter
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pforret\PhpArticleExtractor\Formats;
+namespace Pforret\PfArticleExtractor\Formats;
 
 use DOMDocument;
 

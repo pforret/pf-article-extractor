@@ -1,5 +1,5 @@
 {
-  "name": "pforret/php-article-extractor",
+  "name": "pforret/pf-article-extractor",
   "version": "0.1.4",
   "description": "PhpArticleExtractor. Boilerplate Removal and Fulltext Extraction from HTML pages",
   "license": "MIT",
@@ -33,7 +33,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Pforret\\PhpArticleExtractor\\": "src"
+      "Pforret\\PfArticleExtractor\\": "src"
     }
   },
   "scripts": {

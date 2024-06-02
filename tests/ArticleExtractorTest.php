@@ -1,6 +1,6 @@
 <?php
 
-use Pforret\PhpArticleExtractor\ArticleExtractor;
+use Pforret\PfArticleExtractor\ArticleExtractor;
 use PHPUnit\Framework\TestCase;
 
 final class ArticleExtractorTest extends TestCase
