@@ -19,14 +19,14 @@ composer require pforret/pf-article-extractor
 ## Usage
 
 ```php
-use Pforret\PhpArticleExtractor\ArticleExtractor;
+use Pforret\PfArticleExtractor\ArticleExtractor;
 
-$articleData = ArticleExtractor::extract($html);
+$articleData = ArticleExtractor::getArticle($html);
 /*
- * $articleData = Pforret\PhpArticleExtractor\Formats\ArticleContents Object
+ * $articleData = Pforret\PfArticleExtractor\Formats\ArticleContents Object
 (
     [title] => Film Podcast: Wicked Little Letters Named Film of the Month
-    [content] => Film Podcast: Wicked Little Letters Named Film of the MonthUK Film Club was back in March with a new episode of their film podcast. Hosts Brian Penn and myself (Chris Olson) brought you a jam-packed show with a heavy dolloping of great movies to check out, across the spe
+    [content] => UK Film Club was back in March with a new episode of their film podcast. Hosts Brian Penn and myself (Chris Olson) brought you a jam-packed show with a heavy dolloping of great movies to check out, across the spe
 ctrum of film. (...)
     [date] =>
     [images] => Array
