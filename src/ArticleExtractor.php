@@ -67,7 +67,7 @@ final class ArticleExtractor
         $html = self::cleanupHtml($html);
         $document->parse($html);
         $content = self::extractText($document->getContent());
-        if(!$content){
+        if (! $content) {
             $content = self::lookForClass($html);
         }
 
@@ -76,8 +76,8 @@ final class ArticleExtractor
         $article->content = $content;
         $article->images = $document->getImages() ?? [];
         $article->links = self::getLinks($document->getContent()) ?? [];
-        $article->date = self::getDate($document->getContent()) ?? "";
-        $article->author = $document->getAuthor() ?? "";
+        $article->date = self::getDate($document->getContent()) ?? '';
+        $article->author = $document->getAuthor() ?? '';
 
         return $article;
     }
@@ -112,7 +112,8 @@ final class ArticleExtractor
         if (! trim($content)) {
             return [];
         }
-        preg_match_all('| href="(http[^"]+)"]|',$content, $matches);
+        preg_match_all('| href="(http[^"]+)"]|', $content, $matches);
+
         return $matches[1];
     }
 
@@ -129,6 +130,7 @@ final class ArticleExtractor
     private static function cleanupHtml(string $html): string
     {
         $html = preg_replace('/<span[^>]*>/', '', $html);
+
         return preg_replace('/<\/span>/', '', $html);
     }
 
@@ -140,8 +142,9 @@ final class ArticleExtractor
         $xpath = new \DOMXPath($doc);
         $elements = $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' post-body ')]");
         if ($elements->length > 0) {
-            return preg_replace("|[\s\t\n\r]+|"," ",trim(strip_tags($elements->item(0)->textContent)));
+            return preg_replace("|[\s\t\n\r]+|", ' ', trim(strip_tags($elements->item(0)->textContent)));
         }
+
         return '';
 
     }
