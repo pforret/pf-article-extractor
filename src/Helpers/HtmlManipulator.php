@@ -3,10 +3,12 @@
 namespace Pforret\PfArticleExtractor\Helpers;
 
 use DOMDocument;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 class HtmlManipulator
 {
-    public function parseImages(string $html): array
+    public static function parseImages(string $html): array
     {
         $doc = new DOMDocument();
         @$doc->loadHTML($html);
@@ -20,7 +22,7 @@ class HtmlManipulator
             if (! str_starts_with($url, 'http')) {
                 continue;
             }
-            if ($this->isIrrelevantPicture($url)) {
+            if (self::isIrrelevantPicture($url)) {
                 continue;
             }
             $url = str_replace('&amp;', '&', $url);
@@ -30,7 +32,7 @@ class HtmlManipulator
         return $images;
     }
 
-    private function isIrrelevantPicture(string $url): bool
+    public static function isIrrelevantPicture(string $url): bool
     {
         $detectBasenames = [
             'blank.gif',
@@ -59,5 +61,35 @@ class HtmlManipulator
 
         return in_array(strtolower(basename($url)), $detectBasenames)
             || in_array(parse_url($url, PHP_URL_HOST), $detectDomains);
+    }
+
+    public static function parseLinks(string $html): array
+    {
+        $links = [];
+        $doc = new DOMDocument();
+        @$doc->loadHTML($html);
+        $tags = $doc->getElementsByTagName('a');
+        foreach ($tags as $tag) {
+            $url = $tag->getAttribute('href');
+            if (! $url) {
+                continue;
+            }
+            if (! str_starts_with($url, 'http')) {
+                continue;
+            }
+            $links[] = $tag->getAttribute('href');
+        }
+
+        return $links;
+    }
+
+    public static function cleanupHtml(string $html): string
+    {
+        $htmlSanitizer = new HtmlSanitizer(
+            (new HtmlSanitizerConfig())->allowSafeElements()
+        );
+
+        return $htmlSanitizer->sanitize($html);
+
     }
 }

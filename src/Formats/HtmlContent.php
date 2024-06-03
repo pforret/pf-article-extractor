@@ -4,6 +4,7 @@ namespace Pforret\PfArticleExtractor\Formats;
 
 use DOMDocument;
 use DOMNode;
+use Pforret\PfArticleExtractor\Helpers\HtmlManipulator;
 use Pforret\PfArticleExtractor\Helpers\TextManipulator;
 use Pforret\PfArticleExtractor\Naming\TextLabels;
 
@@ -32,8 +33,8 @@ class HtmlContent
 
     public function __construct(string $html)
     {
-        $html = preg_replace('/<(span)(.*?)>/', '', $html);
-        $html = preg_replace('/<\/(span)>/', '', $html);
+        $html = $this->cleanupHtml($html);
+        //$html = $this->checkForMain($html);
 
         $this->textDocument = new TextDocument();
 
@@ -75,8 +76,8 @@ class HtmlContent
                 } else {
                     if ($this->textBlock) {
                         $this->textDocument->addTextBlock($this->textBlock);
-                        $this->textBlock->parseImages($element->ownerDocument->saveHTML($element));
-                        $this->textBlock->parseLinks($element->ownerDocument->saveHTML($element));
+                        $this->textBlock->setImages(HtmlManipulator::parseImages($element->ownerDocument->saveHTML($element)));
+                        $this->textBlock->setLinks(HtmlManipulator::parseLinks($element->ownerDocument->saveHTML($element)));
                     }
                     $labels = $this->labels[$tag] ?? [];
                     $this->textBlock = new TextBlock($level, $labels);
@@ -122,5 +123,52 @@ class HtmlContent
                 $this->walkNodeTree($node, $level + 1, $isAnchor);
             }
         }
+    }
+
+    private function cleanupHtml(string $html): string
+    {
+        $before = strlen($html);
+        $html = preg_replace('/<(span)(.*?)>/', '', $html);
+        $html = preg_replace('/<\/(span)>/', '', $html);
+        $html = preg_replace('/<script(.*?)>(.*?)<\/script>/', '', $html);
+        $html = preg_replace('/<style(.*?)>(.*?)<\/style>/', '', $html);
+        $html = preg_replace('/<noscript(.*?)>(.*?)<\/noscript>/', '', $html);
+        $html = preg_replace('/<svg(.*?)>(.*?)<\/svg>/', '', $html);
+        $html = preg_replace('/<iframe(.*?)>(.*?)<\/iframe>/', '', $html);
+        $html = preg_replace('/<form(.*?)>(.*?)<\/form>/', '', $html);
+        $html = preg_replace('/<input(.*?)>/', '', $html);
+        $html = preg_replace('/<button(.*?)>(.*?)<\/button>/', '', $html);
+        $html = preg_replace('/<select(.*?)>(.*?)<\/select>/', '', $html);
+        $html = preg_replace('/<textarea(.*?)>(.*?)<\/textarea>/', '', $html);
+        $html = preg_replace('/<label(.*?)>(.*?)<\/label>/', '', $html);
+        $html = preg_replace('/<option(.*?)>(.*?)<\/option>/', '', $html);
+        $html = preg_replace('/<ul(.*?)>(.*?)<\/ul>/', '', $html);
+        $html = preg_replace('/<ol(.*?)>(.*?)<\/ol>/', '', $html);
+        $html = preg_replace('/<nav(.*?)>(.*?)<\/nav>/', '', $html);
+        $html = preg_replace('/<footer(.*?)>(.*?)<\/footer>/', '', $html);
+        $html = preg_replace('/<header(.*?)>(.*?)<\/header>/', '', $html);
+        $html = preg_replace('/<aside(.*?)>(.*?)<\/aside>/', '', $html);
+        printf(__FUNCTION__.": $before -> ".strlen($html)."\n");
+
+        return preg_replace("|[\s\t\n\r]+|", ' ', $html);
+    }
+
+    private function checkForMain(string $html): string
+    {
+        // if there is a <main>...</main> part, parse it out
+        if (! strpos($html, '<main')) {
+            return $html;
+        }
+        printf('1: '.mb_strlen($html)."\n");
+        $html = substr($html, strpos($html, '<main')); // cut before
+        printf('2: '.mb_strlen($html)."\n");
+        if (strpos($html, '</main>')) {
+            $html = substr($html, 0, strpos($html, '</main>') + 7); // cut after
+            printf('3: '.mb_strlen($html)."\n");
+        }
+        $html = "<html lang=''><body>$html</body></html>";
+
+        //print("---\n$html\n---\n");
+        return $html;
     }
 }

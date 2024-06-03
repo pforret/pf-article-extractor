@@ -117,7 +117,7 @@ final class TextDocument
             if (! $block->isContent() && ! $includeNonContent) {
                 continue;
             }
-            $result .= $block->getText();
+            $result .= $block->getText()."\n";
         }
 
         return $result;
@@ -127,7 +127,7 @@ final class TextDocument
     {
         $result = trim($this->getTitle())."\n";
         foreach ($this->textBlocks as $block) {
-            $result .= trim($block).' ';
+            $result .= trim($block)."\n";
         }
 
         return $result;

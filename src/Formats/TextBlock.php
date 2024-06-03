@@ -2,8 +2,6 @@
 
 namespace Pforret\PfArticleExtractor\Formats;
 
-use DOMDocument;
-
 final class TextBlock
 {
     private int $level = 0;
@@ -38,48 +36,6 @@ final class TextBlock
                 $this->labels[$label] = true;
             }
         }
-    }
-
-    public function parseImages(string $html): self
-    {
-        $doc = new DOMDocument();
-        @$doc->loadHTML($html);
-        $tags = $doc->getElementsByTagName('img');
-        foreach ($tags as $tag) {
-            $url = $tag->getAttribute('src');
-            if (! $url) {
-                continue;
-            }
-            if (strpos($url, 'http') !== 0) {
-                continue;
-            }
-            if ($this->isIrrelevantPicture($url)) {
-                continue;
-            }
-            $url = str_replace('&amp;', '&', $url);
-            $this->images[] = $url;
-        }
-
-        return $this;
-    }
-
-    public function parseLinks(string $html): self
-    {
-        $doc = new DOMDocument();
-        @$doc->loadHTML($html);
-        $tags = $doc->getElementsByTagName('a');
-        foreach ($tags as $tag) {
-            $url = $tag->getAttribute('href');
-            if (! $url) {
-                continue;
-            }
-            if (! str_starts_with($url, 'http')) {
-                continue;
-            }
-            $this->links[] = $tag->getAttribute('href');
-        }
-
-        return $this;
     }
 
     public function addText(string $text, string $link = ''): self
@@ -284,37 +240,17 @@ final class TextBlock
         return $this->linkWordCount ? $this->linkWordCount / $this->wordCount : 0;
     }
 
-    private function isIrrelevantPicture(string $url): bool
+    public function setImages(array $images): self
     {
-        $isIrrelevant = false;
-        $detectBasenames = [
-            'blank.gif',
-            'pixel.gif',
-            'pixel.jpeg',
-            'pixel.jpg',
-            'pixel.png',
-            'pixel.svg',
-            'pixel.webp',
-            'spacer.gif',
-            'spacer.jpeg',
-            'spacer.jpg',
-            'spacer.png',
-            'spacer.svg',
-            'spacer.webp',
-            'transparent.gif',
-            'transparent.jpeg',
-            'transparent.jpg',
-            'transparent.png',
-            'transparent.svg',
-            'transparent.webp',
-        ];
+        $this->images = $images;
 
-        $isIrrelevant = $isIrrelevant || in_array(strtolower(basename($url)), $detectBasenames);
-        $detectDomains = [
-            'cdn.jsdelivr.net',
-        ];
-        $isIrrelevant = $isIrrelevant || in_array(parse_url($url, PHP_URL_HOST), $detectDomains);
+        return $this;
+    }
 
-        return $isIrrelevant;
+    public function setLinks(array $parseLinks): self
+    {
+        $this->links = $parseLinks;
+
+        return $this;
     }
 }

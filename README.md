@@ -63,3 +63,10 @@ Rights now it's tested with example pages for
 * Mkdocs
 * Wix
 * WordPress
+
+## Similar packages
+
+* [beautifulsoup4](https://pypi.org/project/beautifulsoup4/) - Python, MIT
+* [html-text](https://pypi.org/project/html-text/) - Python, MIT
+* [kohlschutter/boilerpipe](https://github.com/kohlschutter/boilerpipe) - Java, Apache 2.0
+* [fivefilters/readability.php](https://github.com/fivefilters/readability.php) - PHP, GPL-3.0

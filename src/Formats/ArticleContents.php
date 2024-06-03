@@ -10,6 +10,8 @@ class ArticleContents
 
     public string $date = '';
 
+    public string $author = '';
+
     public array $images = [];
 
     public array $links = [];

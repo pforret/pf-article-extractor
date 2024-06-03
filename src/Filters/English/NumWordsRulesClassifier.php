@@ -8,7 +8,7 @@ use Pforret\PfArticleExtractor\Formats\TextDocument;
 
 final class NumWordsRulesClassifier implements IFilter
 {
-    protected function classify(TextBlock $prev, TextBlock $curr, TextBlock $next)
+    private function classify(TextBlock $prev, TextBlock $curr, TextBlock $next): string
     {
         $isContent = false;
 
