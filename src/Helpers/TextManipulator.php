@@ -38,26 +38,28 @@ class TextManipulator
         if (mb_strlen($text) < 8) {
             return '';
         }
-        if (!preg_match("|\d|", $text)) {
+        if (! preg_match("|\d|", $text)) {
             return '';
         }
-        if (!str_contains($text, date("Y"))) {
+        if (! str_contains($text, date('Y'))) {
             return '';
         }
         $date = '';
         $pattern = $format;
-        $pattern = str_replace("yyyy", '(\d{4})', $pattern);
-        $pattern = str_replace("mm", '(\d{2})', $pattern);
-        $pattern = str_replace("dd", '(\d{2})', $pattern);
+        $pattern = str_replace('yyyy', '(\d{4})', $pattern);
+        $pattern = str_replace('mm', '(\d{2})', $pattern);
+        $pattern = str_replace('dd', '(\d{2})', $pattern);
         $pattern = "|$pattern|";
         if (preg_match($pattern, $text, $matches)) {
             $date = $matches[0];
             $timestamp = strtotime($date);
-            if($timestamp === false){
+            if ($timestamp === false) {
                 return '';
             }
+
             return date('Y-m-d', $timestamp);
         }
+
         return '';
     }
 }

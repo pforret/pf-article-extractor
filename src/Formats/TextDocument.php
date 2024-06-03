@@ -55,7 +55,6 @@ final class TextDocument
         return $this->getText(true, false);
     }
 
-
     public function getImages(bool $includeContent = true, bool $includeNonContent = false): array
     {
         $imageUrls = [];
