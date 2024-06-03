@@ -36,16 +36,6 @@ final class ArticleExtractor
         | (new ListAtEndFilter)->process($doc);
     }
 
-    public static function getContent(string $html): string
-    {
-        $content = new HtmlContent($html);
-        $document = $content->getTextDocument();
-
-        self::process($document);
-
-        return $document->getContent();
-    }
-
     public static function getArticle(string $html): ArticleContents
     {
         $content = new HtmlContent($html);
@@ -58,6 +48,7 @@ final class ArticleExtractor
         $article->content = $document->getContent();
         $article->images = $document->getImages();
         $article->links = $document->getLinks();
+        $article->date = $document->getDate();
 
         return $article;
     }

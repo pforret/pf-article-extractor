@@ -4,6 +4,7 @@ namespace Pforret\PfArticleExtractor\Formats;
 
 use DOMDocument;
 use DOMNode;
+use Pforret\PfArticleExtractor\Helpers\TextManipulator;
 use Pforret\PfArticleExtractor\Naming\TextLabels;
 
 class HtmlContent
@@ -16,7 +17,11 @@ class HtmlContent
 
     private bool $isTitle = false;
 
+    private bool $isDate = false;
+
     private string $title = '';
+
+    private string $date = '';
 
     private array $labels = [
         'li' => [TextLabels::LI],
@@ -42,6 +47,7 @@ class HtmlContent
             $this->textDocument->addTextBlock($this->textBlock);
         }
         $this->textDocument->setTitle($this->title);
+        $this->textDocument->setDate($this->date);
     }
 
     final public function getTextDocument(): TextDocument
@@ -84,19 +90,27 @@ class HtmlContent
                     || str_ends_with($element->data, '!')) {
                     $element->data = $element->data.' ';
                 }
-                $textLine = $this->justTheText($element->data);
-                $textTitle = $this->justTheText($this->title);
+                $textLine = TextManipulator::justTheText($element->data);
+                $textTitle = TextManipulator::justTheText($this->title);
                 if ($textLine != $textTitle &&
                     ! str_starts_with($textLine, $textTitle) &&
                     ! str_starts_with($textTitle, $textLine)
                 ) {
                     $this->textBlock->addText($element->data, $isAnchor);
                 }
+                if (mb_strlen($element->data) < 100) {
+                    $publishDate = TextManipulator::findDate($element->data);
+                    if ($publishDate) {
+                        $this->date = $publishDate;
+                        $this->isDate = true;
+                    }
+
+                }
             }
         } elseif ($this->isTitle) {
             if ($element->nodeType == XML_TEXT_NODE) {
                 $element->data = trim($element->data);
-                if ($element->data && ($this->justTheText($element->data) != $this->justTheText($this->title))) {
+                if ($element->data && (TextManipulator::justTheText($element->data) != TextManipulator::justTheText($this->title))) {
                     // avoid double title (when it's both a <title> and a <h1>,<h2> for instance)
                     $this->title .= $element->data;
                 }
@@ -108,10 +122,5 @@ class HtmlContent
                 $this->walkNodeTree($node, $level + 1, $isAnchor);
             }
         }
-    }
-
-    private function justTheText(string $text): string
-    {
-        return preg_replace('/[^\w]+/', '', $text);
     }
 }
