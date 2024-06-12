@@ -70,3 +70,4 @@ Rights now it's tested with example pages for
 * [html-text](https://pypi.org/project/html-text/) - Python, MIT
 * [kohlschutter/boilerpipe](https://github.com/kohlschutter/boilerpipe) - Java, Apache 2.0
 * [fivefilters/readability.php](https://github.com/fivefilters/readability.php) - PHP, GPL-3.0
+* [miso-belica/jusText](https://github.com/miso-belica/jusText) - Python, BSD2
