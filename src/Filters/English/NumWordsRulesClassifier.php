@@ -41,8 +41,8 @@ final class NumWordsRulesClassifier implements IFilter
 
     public function process(TextDocument $doc): bool
     {
-        $curr = new TextBlock();
-        $next = new TextBlock();
+        $curr = new TextBlock;
+        $next = new TextBlock;
 
         $hasChanges = false;
         foreach ($doc->getTextBlocks() as $tb) {
@@ -54,12 +54,12 @@ final class NumWordsRulesClassifier implements IFilter
 
         $prev = $curr;
         $curr = $next;
-        $next = new TextBlock();
+        $next = new TextBlock;
         $hasChanges = $this->classify($prev, $curr, $next) || $hasChanges;
 
         $prev = $curr;
         $curr = $next;
-        $next = new TextBlock();
+        $next = new TextBlock;
 
         return $this->classify($prev, $curr, $next) || $hasChanges;
     }

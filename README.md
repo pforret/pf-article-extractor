@@ -27,7 +27,7 @@ use Pforret\PfArticleExtractor\ArticleExtractor;
 
 $articleData = ArticleExtractor::getArticle($html);
 /*
- * $articleData = Pforret\PfArticleExtractor\Formats\ArticleContents Object
+ * $articleData = Pforret\PfArticleExtractor\Formats\ArticleContentsDTO Object
 (
     [title] => Film Podcast: Wicked Little Letters Named Film of the Month
     [content] => UK Film Club was back in March with a new episode of their film podcast. (...)

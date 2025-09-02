@@ -3,14 +3,12 @@
 namespace Pforret\PfArticleExtractor\Helpers;
 
 use DOMDocument;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 class HtmlManipulator
 {
     public static function parseImages(string $html): array
     {
-        $doc = new DOMDocument();
+        $doc = new DOMDocument;
         @$doc->loadHTML($html);
         $tags = $doc->getElementsByTagName('img');
         $images = [];
@@ -34,7 +32,7 @@ class HtmlManipulator
 
     public static function isIrrelevantPicture(string $url): bool
     {
-        $detectBasenames = [
+        $ignoreFileNames = [
             'blank.gif',
             'pixel.gif',
             'pixel.jpeg',
@@ -55,18 +53,18 @@ class HtmlManipulator
             'transparent.svg',
             'transparent.webp',
         ];
-        $detectDomains = [
+        $ignoreDomains = [
             'cdn.jsdelivr.net',
         ];
 
-        return in_array(strtolower(basename($url)), $detectBasenames)
-            || in_array(parse_url($url, PHP_URL_HOST), $detectDomains);
+        return in_array(strtolower(basename($url)), $ignoreFileNames)
+            || in_array(parse_url($url, PHP_URL_HOST), $ignoreDomains);
     }
 
     public static function parseLinks(string $html): array
     {
         $links = [];
-        $doc = new DOMDocument();
+        $doc = new DOMDocument;
         @$doc->loadHTML($html);
         $tags = $doc->getElementsByTagName('a');
         foreach ($tags as $tag) {
@@ -83,13 +81,65 @@ class HtmlManipulator
         return $links;
     }
 
-    public static function cleanupHtml(string $html): string
+    public static function cleanup(string $html): string
     {
-        $htmlSanitizer = new HtmlSanitizer(
-            (new HtmlSanitizerConfig())->allowSafeElements()
-        );
+        $html = preg_replace("|[\s\t\n\r]+|", ' ', $html); // make sure there are no multilines
+        $html = preg_replace('/<(span)(.*?)>/', '', $html);
+        $html = preg_replace('/<\/(span)>/', '', $html);
+        $html = preg_replace('/<script(.*?)>(.*?)<\/script>/', '', $html);
+        $html = preg_replace('/<style(.*?)>(.*?)<\/style>/', '', $html);
+        $html = preg_replace('/<noscript(.*?)>(.*?)<\/noscript>/', '', $html);
+        $html = preg_replace('/<svg(.*?)>(.*?)<\/svg>/', '', $html);
+        $html = preg_replace('/<iframe(.*?)>(.*?)<\/iframe>/', '', $html);
+        $html = preg_replace('/<form(.*?)>(.*?)<\/form>/', '', $html);
+        $html = preg_replace('/<input(.*?)>/', '', $html);
+        $html = preg_replace('/<button(.*?)>(.*?)<\/button>/', '', $html);
+        $html = preg_replace('/<select(.*?)>(.*?)<\/select>/', '', $html);
+        $html = preg_replace('/<textarea(.*?)>(.*?)<\/textarea>/', '', $html);
+        $html = preg_replace('/<label(.*?)>(.*?)<\/label>/', '', $html);
+        $html = preg_replace('/<option(.*?)>(.*?)<\/option>/', '', $html);
+        $html = preg_replace('/<ul(.*?)>(.*?)<\/ul>/', '', $html);
+        $html = preg_replace('/<ol(.*?)>(.*?)<\/ol>/', '', $html);
+        $html = preg_replace('/<nav(.*?)>(.*?)<\/nav>/', '', $html);
+        $html = preg_replace('/<footer(.*?)>(.*?)<\/footer>/', '', $html);
+        $html = preg_replace('/<header(.*?)>(.*?)<\/header>/', '', $html);
+        $html = preg_replace('/<aside(.*?)>(.*?)<\/aside>/', '', $html);
+        $html = preg_replace('/<!--(.*?)-->/', '', $html);
+        $html = preg_replace('/<div ([^>]+)>\s*<\/div>/', '', $html);
 
-        return $htmlSanitizer->sanitize($html);
+        return trim(preg_replace("|[\s\t\n\r]+|", ' ', $html));
+    }
 
+    public static function parseMeta(string $html): array
+    {
+        // parse the DOM html for <meta> tags
+        $doc = new DOMDocument;
+        @$doc->loadHTML($html);
+        $tags = $doc->getElementsByTagName('meta');
+        $meta = [];
+        foreach ($tags as $tag) {
+            $name = $tag->getAttribute('name');
+            $content = $tag->getAttribute('content');
+            if ($name && $content) {
+                $meta[$name] = $content;
+            }
+        }
+
+        return $meta;
+    }
+
+    public static function parseCanonical(string $html)
+    {
+        // parse <link rel="canonical" from HTML
+        $doc = new DOMDocument;
+        @$doc->loadHTML($html);
+        $tags = $doc->getElementsByTagName('link');
+        foreach ($tags as $tag) {
+            if ($tag->getAttribute('rel') == 'canonical') {
+                return $tag->getAttribute('href');
+            }
+        }
+
+        return '';
     }
 }

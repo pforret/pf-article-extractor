@@ -5,5 +5,5 @@ require __DIR__.'/vendor/autoload.php';
 $path = 'http://news.investors.com/073115-764464-electronic-arts-ea-stock-falls-on-weak-guidance.htm?ven=yahoocp&src=aurlled&ven=yahoo';
 $data = file_get_contents($path);
 
-$ae = new Pforret\PhpArticleExtractor\ArticleExtractor();
+$ae = new Pforret\PhpArticleExtractor\ArticleExtractor;
 echo $ae->getContent($data)."\n";

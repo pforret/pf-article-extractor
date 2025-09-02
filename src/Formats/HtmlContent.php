@@ -33,12 +33,12 @@ class HtmlContent
 
     public function __construct(string $html)
     {
-        $html = $this->cleanupHtml($html);
-        //$html = $this->checkForMain($html);
+        $html = HtmlManipulator::cleanup($html);
+        // $html = $this->checkForMain($html);
 
-        $this->textDocument = new TextDocument();
+        $this->textDocument = new TextDocument;
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         libxml_use_internal_errors(true);
         $dom->loadHTML($html);
         libxml_clear_errors();
@@ -125,34 +125,6 @@ class HtmlContent
         }
     }
 
-    private function cleanupHtml(string $html): string
-    {
-        $before = strlen($html);
-        $html = preg_replace('/<(span)(.*?)>/', '', $html);
-        $html = preg_replace('/<\/(span)>/', '', $html);
-        $html = preg_replace('/<script(.*?)>(.*?)<\/script>/', '', $html);
-        $html = preg_replace('/<style(.*?)>(.*?)<\/style>/', '', $html);
-        $html = preg_replace('/<noscript(.*?)>(.*?)<\/noscript>/', '', $html);
-        $html = preg_replace('/<svg(.*?)>(.*?)<\/svg>/', '', $html);
-        $html = preg_replace('/<iframe(.*?)>(.*?)<\/iframe>/', '', $html);
-        $html = preg_replace('/<form(.*?)>(.*?)<\/form>/', '', $html);
-        $html = preg_replace('/<input(.*?)>/', '', $html);
-        $html = preg_replace('/<button(.*?)>(.*?)<\/button>/', '', $html);
-        $html = preg_replace('/<select(.*?)>(.*?)<\/select>/', '', $html);
-        $html = preg_replace('/<textarea(.*?)>(.*?)<\/textarea>/', '', $html);
-        $html = preg_replace('/<label(.*?)>(.*?)<\/label>/', '', $html);
-        $html = preg_replace('/<option(.*?)>(.*?)<\/option>/', '', $html);
-        $html = preg_replace('/<ul(.*?)>(.*?)<\/ul>/', '', $html);
-        $html = preg_replace('/<ol(.*?)>(.*?)<\/ol>/', '', $html);
-        $html = preg_replace('/<nav(.*?)>(.*?)<\/nav>/', '', $html);
-        $html = preg_replace('/<footer(.*?)>(.*?)<\/footer>/', '', $html);
-        $html = preg_replace('/<header(.*?)>(.*?)<\/header>/', '', $html);
-        $html = preg_replace('/<aside(.*?)>(.*?)<\/aside>/', '', $html);
-        printf(__FUNCTION__.": $before -> ".strlen($html)."\n");
-
-        return preg_replace("|[\s\t\n\r]+|", ' ', $html);
-    }
-
     private function checkForMain(string $html): string
     {
         // if there is a <main>...</main> part, parse it out
@@ -166,9 +138,8 @@ class HtmlContent
             $html = substr($html, 0, strpos($html, '</main>') + 7); // cut after
             printf('3: '.mb_strlen($html)."\n");
         }
-        $html = "<html lang=''><body>$html</body></html>";
 
-        //print("---\n$html\n---\n");
-        return $html;
+        // print("---\n$html\n---\n");
+        return "<html lang=''><body>$html</body></html>";
     }
 }

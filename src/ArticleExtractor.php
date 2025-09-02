@@ -16,9 +16,9 @@ use Pforret\PfArticleExtractor\Filters\Heuristics\LargeBlockSameTagLevelToConten
 use Pforret\PfArticleExtractor\Filters\Heuristics\ListAtEndFilter;
 use Pforret\PfArticleExtractor\Filters\Heuristics\TrailingHeadlineToBoilerplateFilter;
 use Pforret\PfArticleExtractor\Filters\Simple\BoilerplateBlockFilter;
-use Pforret\PfArticleExtractor\Formats\ArticleContents;
-use Pforret\PfArticleExtractor\Formats\HtmlContent;
+use Pforret\PfArticleExtractor\Formats\ArticleContentsDTO;
 use Pforret\PfArticleExtractor\Formats\TextDocument;
+use Pforret\PfArticleExtractor\Helpers\HtmlManipulator;
 use Pforret\PfArticleExtractor\Helpers\TextManipulator;
 use Pforret\PfArticleExtractor\Naming\TextLabels;
 
@@ -26,7 +26,7 @@ final class ArticleExtractor
 {
     public static function process(TextDocument $doc): bool
     {
-        return (new TerminatingBlocksFinder())->process($doc)
+        return (new TerminatingBlocksFinder)->process($doc)
         | (new DocumentTitleMatchClassifier)->process($doc)
         | (new NumWordsRulesClassifier)->process($doc)
         | (new IgnoreBlocksAfterContentFilter(60))->process($doc)
@@ -40,44 +40,34 @@ final class ArticleExtractor
         | (new ListAtEndFilter)->process($doc);
     }
 
-    public static function getArticleOld(string $html): ArticleContents
-    {
-        $content = new HtmlContent($html);
-        $document = $content->getTextDocument();
-
-        self::process($document);
-
-        $article = new ArticleContents();
-        $article->title = $document->getTitle();
-        $article->content = $document->getContent();
-        $article->images = $document->getImages();
-        $article->links = $document->getLinks();
-        $article->date = $document->getDate();
-
-        return $article;
-    }
-
     /**
      * @throws ParseException
      */
-    public static function getArticle(string $html): ArticleContents
+    public static function getArticle(string $html): ArticleContentsDTO
     {
-        $configuration = new Configuration();
+        $configuration = new Configuration;
         $document = new Readability($configuration);
-        $html = self::cleanupHtml($html);
+        $html = HtmlManipulator::cleanup($html);
         $document->parse($html);
         $content = self::extractText($document->getContent());
         if (! $content) {
             $content = self::lookForClass($html);
         }
+        if (str_starts_with(strtolower($content), 'skip to content')) {
+            $content = trim(substr($content, 15));
+        }
 
-        $article = new ArticleContents();
-        $article->title = $document->getTitle();
-        $article->content = $content;
+        $article = new ArticleContentsDTO;
+        $article->meta = HtmlManipulator::parseMeta($html);
+        $article->canonical = HtmlManipulator::parseCanonical($html);
+        $article->title = self::cleanupTitle($document->getTitle());
+        $article->content = self::cleanupBody($content);
         $article->images = $document->getImages() ?? [];
         $article->links = self::getLinks($document->getContent()) ?? [];
         $article->date = self::getDate($document->getContent()) ?? '';
         $article->author = $document->getAuthor() ?? '';
+
+        print_r($article);
 
         return $article;
     }
@@ -137,7 +127,7 @@ final class ArticleExtractor
     private static function lookForClass(string $html): string
     {
         // look for <div class='post-body'> via DomObject
-        $doc = new \DOMDocument();
+        $doc = new \DOMDocument;
         @$doc->loadHTML($html);
         $xpath = new \DOMXPath($doc);
         $elements = $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' post-body ')]");
@@ -147,5 +137,29 @@ final class ArticleExtractor
 
         return '';
 
+    }
+
+    private static function cleanupTitle(?string $getTitle): string
+    {
+        return str_replace([
+            "'",
+        ], [
+            '’',
+        ], $getTitle);
+    }
+
+    private static function cleanupBody(string $content): string
+    {
+        if (str_starts_with(strtolower($content), 'skip to content')) {
+            $content = trim(substr($content, 15));
+        }
+        $content = preg_replace("|(\s[\t\s]++)|", ' ', $content);
+        $content = preg_replace("|([\n\r]+)|", "\n", $content);
+
+        return str_replace(
+            ['&nbsp;'],
+            [' '],
+            $content
+        );
     }
 }
