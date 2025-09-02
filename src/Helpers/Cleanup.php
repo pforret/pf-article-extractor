@@ -40,24 +40,24 @@ class Cleanup
 
     public static function relativeToAbsoluteUrl(string $relative, string $currentUrl): string
     {
-        if(str_starts_with($relative, 'https://')) {
+        if (str_starts_with($relative, 'https://')) {
             return $relative;
         }
-        if(str_starts_with($relative, 'http://')) {
+        if (str_starts_with($relative, 'http://')) {
             return $relative;
         }
-        if(!$currentUrl) {
+        if (! $currentUrl) {
             return '';
         }
         $url = parse_url($currentUrl);
         $scheme = $url['scheme'] ?? 'http';
         $host = $url['host'] ?? '';
-        if(str_starts_with($relative, '/')) {
-            return $scheme . '://' . $host . $relative;
+        if (str_starts_with($relative, '/')) {
+            return $scheme.'://'.$host.$relative;
         }
         $path = $url['path'] ?? '';
         $path = substr($path, 0, strrpos($path, '/') + 1);
-        return $scheme . '://' . $host . $path . $relative;
-    }
 
+        return $scheme.'://'.$host.$path.$relative;
+    }
 }

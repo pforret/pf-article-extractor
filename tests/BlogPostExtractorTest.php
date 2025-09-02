@@ -1,22 +1,20 @@
 <?php
 
-
 use fivefilters\Readability\ParseException;
 use Pforret\PfArticleExtractor\BlogPostExtractor;
 use PHPUnit\Framework\TestCase;
 
 class BlogPostExtractorTest extends TestCase
 {
-
     /**
      * @throws ParseException
      */
-    public function testGetArticleAstro()
+    public function test_get_article_astro()
     {
-        $html = file_get_contents(__DIR__ . '/examples/blog_astro.html');
+        $html = file_get_contents(__DIR__.'/examples/blog_astro.html');
         $extractor = new BlogPostExtractor($html);
         $article = $extractor->getArticle();
-        //print_r($article);
+        // print_r($article);
         $this->assertEquals('https://astro.build/blog/2023-web-framework-performance-report/', $article->canonical);
         $this->assertEquals('2023 Web Framework Performance Report | Astro', $article->title);
         $this->assertEquals('', $article->author);
@@ -30,9 +28,9 @@ class BlogPostExtractorTest extends TestCase
     /**
      * @throws ParseException
      */
-    public function testGetArticleBlogger()
+    public function test_get_article_blogger()
     {
-        $html = file_get_contents(__DIR__ . '/examples/blog_blogger.html');
+        $html = file_get_contents(__DIR__.'/examples/blog_blogger.html');
         $extractor = new BlogPostExtractor($html);
         $article = $extractor->getArticle();
         print_r($article);

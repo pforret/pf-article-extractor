@@ -17,6 +17,7 @@ class BlogPostExtractor
     private string $html;
 
     private array $meta;
+
     private string $canonical;
 
     public function __construct(string $html)
@@ -43,8 +44,8 @@ class BlogPostExtractor
         $contents->summary = $this->getSummary();
         $contents->content = $this->getContent();
         $contents->image = $this->getMainImage();
-        //$contents->images = $this->getImages();
-        //$contents->links = $this->getLinks();
+        // $contents->images = $this->getImages();
+        // $contents->links = $this->getLinks();
 
         return $contents;
     }
@@ -159,7 +160,6 @@ class BlogPostExtractor
             return $this->meta['twitter:creator'];
         }
 
-
         return '';
     }
 
@@ -184,7 +184,7 @@ class BlogPostExtractor
         $tags = $this->doc->getElementsByTagName('time');
         foreach ($tags as $tag) {
             if ($tag->getAttribute('datetime')) {
-                return date("Y-m-d",strtotime($tag->getAttribute('datetime')));
+                return date('Y-m-d', strtotime($tag->getAttribute('datetime')));
             }
         }
 
@@ -197,17 +197,18 @@ class BlogPostExtractor
         $images = [];
         foreach ($tags as $tag) {
             $src = $tag->getAttribute('src');
-            if(!$src){
+            if (! $src) {
                 continue;
             }
             $src = Cleanup::relativeToAbsoluteUrl($src, $this->canonical);
-            if(!$src){
+            if (! $src) {
                 continue;
             }
             $images[$src] = $src;
         }
 
         sort($images);
+
         return $images;
     }
 
@@ -218,19 +219,20 @@ class BlogPostExtractor
         $internalDomain = parse_url($this->canonical, PHP_URL_HOST);
         foreach ($tags as $tag) {
             $href = $tag->getAttribute('href');
-            if(!$href) {
+            if (! $href) {
                 continue;
             }
             $href = Cleanup::relativeToAbsoluteUrl($href, $this->canonical);
-            if(!$href) {
+            if (! $href) {
                 continue;
             }
-            if($externalOnly && parse_url($href, PHP_URL_HOST) == $internalDomain) {
+            if ($externalOnly && parse_url($href, PHP_URL_HOST) == $internalDomain) {
                 continue;
             }
             $links[$href] = $href;
         }
         sort($links);
+
         return $links;
     }
 
@@ -243,6 +245,7 @@ class BlogPostExtractor
         $document = new Readability($configuration);
         $html = HtmlManipulator::cleanup($this->html);
         $document->parse($html);
+
         return Cleanup::extractText($document->getContent());
     }
 
@@ -269,6 +272,4 @@ class BlogPostExtractor
         return '';
 
     }
-
-
 }
