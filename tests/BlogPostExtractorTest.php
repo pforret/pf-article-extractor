@@ -33,7 +33,6 @@ class BlogPostExtractorTest extends TestCase
         $html = file_get_contents(__DIR__.'/examples/blog_blogger.html');
         $extractor = new BlogPostExtractor($html);
         $article = $extractor->getArticle();
-        print_r($article);
         $this->assertEquals('https://blogger.googleblog.com/2011/07/you-can-do-some-amazing-things-with.html', $article->canonical);
         $this->assertEquals('You can do some amazing things with Blogger', $article->title);
         $this->assertEquals('@blogger', $article->author);

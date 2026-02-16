@@ -67,8 +67,6 @@ final class ArticleExtractor
         $article->date = self::getDate($document->getContent()) ?? '';
         $article->author = $document->getAuthor() ?? '';
 
-        print_r($article);
-
         return $article;
     }
 
